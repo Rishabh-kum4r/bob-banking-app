@@ -1,5 +1,0 @@
-BACKEND/venv/
-BACKEND/banking.db
-__pycache__/
-*.pyc
-.env
