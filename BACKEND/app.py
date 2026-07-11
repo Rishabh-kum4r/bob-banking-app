@@ -120,6 +120,23 @@ def withdraw_route():
 
     if request.method == 'POST':
         amount_str = request.form.get('amount', '').strip()
+
+        # Validation: amount must be provided
+        if not amount_str:
+            return render_template('withdraw.html', error='Amount is required', balance=current_balance)
+
+        # Validation: amount must be a positive number
+        try:
+            amount_val = float(amount_str)
+        except ValueError:
+            amount_val = 0
+        if amount_val <= 0:
+            return render_template('withdraw.html', error='Amount must be greater than zero', balance=current_balance)
+
+        # Validation: amount must not exceed current balance
+        if amount_val > current_balance:
+            return render_template('withdraw.html', error='Insufficient funds', balance=current_balance)
+
         ok, result = withdraw(session['customer_id'], amount_str)
         if ok:
             session['success'] = f'Withdrawal of ${float(amount_str):,.2f} was successful. New balance: ${result:,.2f}'
